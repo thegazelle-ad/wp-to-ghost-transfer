@@ -87,18 +87,21 @@ knex.schema
 	table.increments('id').primary().unsigned();
 	table.integer('author_id').unsigned().notNullable().references('id').inTable('authors');
 	table.integer('post_id').unsigned().notNullable().references('id').inTable('posts');
+	table.index(['author_id', 'post_id'], 'uniqueness_index');
 })
 // Create teams_authors table
 .createTable('teams_authors', (table) => {
 	table.increments('id').primary().unsigned();
 	table.integer('team_id').unsigned().notNullable().references('id').inTable('teams');
 	table.integer('author_id').unsigned().notNullable().references('id').inTable('authors');
+	table.index(['team_id', 'author_id'], 'uniqueness_index');
 })
 // Create issues_posts table
 .createTable('issues_posts', (table) => {
 	table.increments('id').primary().unsigned();
 	table.integer('post_id').unsigned().notNullable().references('id').inTable('posts');
 	table.integer('issue_id').unsigned().notNullable().references('id').inTable('issues');
+	table.index(['post_id', 'issue_id'], 'uniqueness_index');
 })
 // Create issues_categories_order table
 .createTable('issues_categories_order', (table) => {
