@@ -1,157 +1,51 @@
-var mysql = require('mysql');
+'use strict';
 
-var con = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "gazelle_old"
-});
-
-con.connect(function(err){
-  if (err){
-    console.log('Error connecting to Db');
-    return;
+const queryBuilder = require('knex')({
+  client: 'mysql',
+  connection: {
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "gazelle_old"
   }
-  console.log('Connection established');
 });
 
-// Gets the category of each post
-// Spaces are provided to the query since nothing but the first line starts at the beginning
-let query = "\
-SELECT post_title, name\
-  FROM wp_terms AS terms\
-       INNER JOIN wp_term_taxonomy AS tax\
-       ON terms.term_id = tax.term_taxonomy_id\
-       \
-       INNER JOIN wp_term_relationships AS rel\
-       ON terms.term_id = rel.term_taxonomy_id\
-       \
-       INNER JOIN wp_posts AS posts\
-       ON posts.ID = rel.object_id\
- WHERE tax.taxonomy = 'category'";
+const terms = 'wp_terms';
+const title = 'post_title';
+const name = 'name'
+const taxonomy = 'wp_term_taxonomy';
+const termId = 'term_id';
+const taxonomyId = 'term_taxonomy_id';
+const relationships = 'wp_term_relationships';
+const posts = 'wp_posts';
+const objectId = 'object_id';
 
-con.query(query, (err, rows) => {
-	if (err) {
-		throw err;
-	}
-	console.log("categories");
-	console.log(rows.slice(0, 4));
-});
+function postToWordpressTermQuery(wpTerm, maxRows) {
+  return queryBuilder
+    .select(title, name)
+    .from(terms)
+      .innerJoin(taxonomy, terms+'.'+termId, '=', taxonomy+'.'+taxonomyId)
+      .innerJoin(relationships, terms+'.'+termId, '=', relationships+'.'+taxonomyId)
+      .innerJoin(posts, posts+'.ID', '=', relationships+'.'+objectId)
+    .where(taxonomy+'.taxonomy', '=', wpTerm)
+  .then((rows) => {
+    console.log(wpTerm + " is coming");
+    console.log(rows.slice(0, maxRows));
+    return;
+  })
+  .catch((err) => {
+    throw err;
+  });
+}
 
-// Gets the author of each post
-query = "\
-SELECT post_title, name\
-  FROM wp_terms AS terms\
-       INNER JOIN wp_term_taxonomy AS tax\
-       ON terms.term_id = tax.term_taxonomy_id\
-       \
-       INNER JOIN wp_term_relationships AS rel\
-       ON terms.term_id = rel.term_taxonomy_id\
-       \
-       INNER JOIN wp_posts AS posts\
-       ON posts.ID = rel.object_id\
- WHERE tax.taxonomy= 'author'";
+function disconnect() {
+  queryBuilder.destroy();
+}
 
-con.query(query, (err, rows) => {
-	if (err) {
-		throw err;
-	}
-	console.log("authors");
-	console.log(rows.slice(0, 4));
-});
-
-// Gets the issues of each post
-query = "\
-SELECT post_title, name\
-  FROM wp_terms AS terms\
-       INNER JOIN wp_term_taxonomy AS tax\
-       ON terms.term_id = tax.term_taxonomy_id\
-       \
-       INNER JOIN wp_term_relationships AS rel\
-       ON terms.term_id = rel.term_taxonomy_id\
-       \
-       INNER JOIN wp_posts AS posts\
-       ON posts.ID = rel.object_id\
- WHERE tax.taxonomy= 'issue'";
-
-con.query(query, (err, rows) => {
-	if (err) {
-		throw err;
-	}
-	console.log("issues");
-	console.log(rows.slice(0, 4));
-});
-
-// nav_menu
-query = "\
-SELECT post_title, name\
-  FROM wp_terms AS terms\
-       INNER JOIN wp_term_taxonomy AS tax\
-       ON terms.term_id = tax.term_taxonomy_id\
-       \
-       INNER JOIN wp_term_relationships AS rel\
-       ON terms.term_id = rel.term_taxonomy_id\
-       \
-       INNER JOIN wp_posts AS posts\
-       ON posts.ID = rel.object_id\
- WHERE tax.taxonomy= 'nav_menu'";
-
-con.query(query, (err, rows) => {
-	if (err) {
-		throw err;
-	}
-	console.log("nav_menu");
-	console.log(rows.slice(0, 4));
-});
-
-// post_format
-query = "\
-SELECT post_title, name\
-  FROM wp_terms AS terms\
-       INNER JOIN wp_term_taxonomy AS tax\
-       ON terms.term_id = tax.term_taxonomy_id\
-       \
-       INNER JOIN wp_term_relationships AS rel\
-       ON terms.term_id = rel.term_taxonomy_id\
-       \
-       INNER JOIN wp_posts AS posts\
-       ON posts.ID = rel.object_id\
- WHERE tax.taxonomy= 'post_format'";
-
-con.query(query, (err, rows) => {
-	if (err) {
-		throw err;
-	}
-	console.log("post_format");
-	console.log(rows.slice(0, 4));
-});
-
-// post_tag
-query = "\
-SELECT post_title, name\
-  FROM wp_terms AS terms\
-       INNER JOIN wp_term_taxonomy AS tax\
-       ON terms.term_id = tax.term_taxonomy_id\
-       \
-       INNER JOIN wp_term_relationships AS rel\
-       ON terms.term_id = rel.term_taxonomy_id\
-       \
-       INNER JOIN wp_posts AS posts\
-       ON posts.ID = rel.object_id\
- WHERE tax.taxonomy= 'post_tag'";
-
-con.query(query, (err, rows) => {
-	if (err) {
-		throw err;
-	}
-	console.log("post_tag");
-	console.log(rows.slice(0, 4));
-});
-
-con.end(function(err) {
-	if (err) {
-		console.log("error disconnecting from db");
-		throw err;
-	}
-	console.log("disconnected correctly");
-});
+postToWordpressTermQuery('category', 4)
+  .then(postToWordpressTermQuery('author', 4))
+  .then(postToWordpressTermQuery('issue', 4))
+  .then(postToWordpressTermQuery('nav_menu', 4))
+  .then(postToWordpressTermQuery('post_format', 4))
+  .then(postToWordpressTermQuery('post_tag', 4))
+  .then(disconnect());
