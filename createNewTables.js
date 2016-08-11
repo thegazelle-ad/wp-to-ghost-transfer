@@ -66,6 +66,7 @@ knex.schema
 .createTable('gazelle_posts', (table) => {
 	table.integer('id').primary().unsigned().references('id').inTable('posts');
 	table.integer('category_id').unsigned().references('id').inTable('categories');
+	table.string('description', MAX_DESCRIPTION_LENGTH);
 	table.integer('views').unsigned().notNullable().defaultTo(0);
 	table.date('gazelle_published_at');
 })
