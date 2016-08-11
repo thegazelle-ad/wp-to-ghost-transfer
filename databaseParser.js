@@ -19,6 +19,8 @@ const taxonomyId = 'term_taxonomy_id';
 const relationships = 'wp_term_relationships';
 const posts = 'wp_posts';
 const objectId = 'object_id';
+const postId = "ID";
+const taxonomy = "taxonomy"
 
 function postToWordpressTermQuery(wpTerm, maxRows) {
   return queryBuilder
@@ -26,8 +28,8 @@ function postToWordpressTermQuery(wpTerm, maxRows) {
     .from(terms)
       .innerJoin(taxonomy, terms+'.'+termId, '=', taxonomy+'.'+taxonomyId)
       .innerJoin(relationships, terms+'.'+termId, '=', relationships+'.'+taxonomyId)
-      .innerJoin(posts, posts+'.ID', '=', relationships+'.'+objectId)
-    .where(taxonomy+'.taxonomy', '=', wpTerm)
+      .innerJoin(posts, posts+'.'+postId, '=', relationships+'.'+objectId)
+    .where(taxonomy+'.'+taxonomy, '=', wpTerm)
   .then((rows) => {
     console.log(wpTerm + " is coming");
     console.log(rows.slice(0, maxRows));
