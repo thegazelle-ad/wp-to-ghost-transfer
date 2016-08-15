@@ -1,0 +1,34 @@
+[
+    {
+        "name": "Uncategorized",
+        "slug": "uncategorized"
+    },
+    {
+        "name": "Features",
+        "slug": "features"
+    },
+    {
+        "name": "News",
+        "slug": "news"
+    },
+    {
+        "name": "Opinion",
+        "slug": "opinion"
+    },
+    {
+        "name": "Creative",
+        "slug": "creative"
+    },
+    {
+        "name": "Video",
+        "slug": "video"
+    },
+    {
+        "name": "Nikolaj Nielsen",
+        "slug": "cap-nikolaj-nielsen"
+    },
+    {
+        "name": "Daniel Karell",
+        "slug": "cap-daniel-karell"
+    }
+]

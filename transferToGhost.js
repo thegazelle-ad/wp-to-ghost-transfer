@@ -1,5 +1,8 @@
 'use strict';
 
+// file system
+let fs = require('fs');
+
 // Database variables
 
 const DATABASE_HOST = "localhost";
@@ -64,39 +67,52 @@ function disconnectGhost() {
   ghostQueryBuilder.destroy();
 }
 
-// Transfer starts here
+// data export code
+function getWpTerm(termSlug, fileName) {
+  // Count how many functions have to finish
+  functionCount++;
 
-// Fill up categories table
-wordpressQueryBuilder
-.distinct().select('slug')
-.from(wp_terms)
-  .innerJoin(wp_taxonomy, wp_terms+'.'+wp_termId, '=', wp_taxonomy+'.'+wp_taxonomyId)
-.where(wp_taxonomy+'.'+taxonomy, '=', 'author')
-.then((rows) => {
-  console.log(JSON.stringify(rows, null, 4));
-  const slugs = rows.map((row) => {
-    return row.slug;
-  })
   wordpressQueryBuilder
-  .select('name', 'slug')
+  .distinct().select('slug')
   .from(wp_terms)
     .innerJoin(wp_taxonomy, wp_terms+'.'+wp_termId, '=', wp_taxonomy+'.'+wp_taxonomyId)
-  .where(wp_taxonomy+'.'+taxonomy, '=', 'author').orWhereIn('slug', slugs)
+  .where(wp_taxonomy+'.'+taxonomy, '=', termSlug)
   .then((rows) => {
-    const S = new Set();
-    rows = rows.filter((row) => {
-      if (S.has(row.name)) {
-        return false;
-      }
-      else {
-        S.add(row.name);
-        return true;
-      }
+    const slugs = rows.map((row) => {
+      return row.slug;
     })
-    ghostQueryBuilder
-    .insert(rows).into('authors')
-    // Disconnect from the databases
-    .then(disconnectWordpress()).then(disconnectGhost());
+    wordpressQueryBuilder
+    .select('name', 'slug')
+    .from(wp_terms)
+      .innerJoin(wp_taxonomy, wp_terms+'.'+wp_termId, '=', wp_taxonomy+'.'+wp_taxonomyId)
+    .whereIn('slug', slugs).andWhere(wp_taxonomy+'.'+taxonomy, '=', termSlug)
+    .then((rows) => {
+      fs.writeFileSync('jsonData/' + fileName + '.json', JSON.stringify(rows, null, 4));
+      disconnectIfDone();
+    });
   });
-});
+}
 
+function disconnectIfDone() {
+  cnt++;
+  if (cnt >= functionCount) {
+    disconnectWordpress();
+    disconnectGhost();
+  }
+}
+
+// counts how many queries are done
+let functionCount = 0;
+let cnt = 0;
+// export actually happens here
+getWpTerm('category', 'categories');
+
+getWpTerm('author', 'authors');
+
+getWpTerm('issue', 'issues');
+
+getWpTerm('nav_menu', 'nav_menues');
+
+getWpTerm('post_format', 'post_formats');
+
+getWpTerm('post_tag', 'post_tags');
