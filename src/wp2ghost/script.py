@@ -1,0 +1,13 @@
+File = open("thegazelle.wordpress.2016-06-22.xml", "r")
+text = File.read()
+start = text.find("<item>")
+end = text.find("</item")
+tar = text.find("NYU Holds Vigil for Chapel Hill Murders in New York")
+while end < tar:
+	start = text.find("<item>", start+1)
+	end = text.find("</item", end+1)
+File.close()
+File = open("thegazelle.wordpress.2016-06-22.xml", "w")
+File.write(text[:start] + text[end+len("</item")+1:])
+File.close()
+#print(text[start:end+len("</item")+1])

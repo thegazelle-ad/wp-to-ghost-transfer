@@ -1,0 +1,16 @@
+{
+  "WORDPRESS_DATABASE_CLIENT": "mysql",
+  "WORDPRESS_DATABASE_HOST": "localhost",
+  "WORDPRESS_DATABASE_USER": "root",
+  "WORDPRESS_DATABASE_PASSWORD": "mypassword",
+  "WORDPRESS_DATABASE_NAME": "gazelle_old",
+
+  "GHOST_DATABASE_CLIENT": "mysql",
+  "GHOST_DATABASE_HOST": "localhost",
+  "GHOST_DATABASE_USER": "root",
+  "GHOST_DATABASE_PASSWORD": "mypassword",
+  "GHOST_DATABASE_NAME": "ghost",
+
+  "WORDPRESS_IMPORT_XML_PATH": "data/wordpress.xml",
+  "GHOST_EXPORT_JSON_PATH": "data/ghost.json"
+}
