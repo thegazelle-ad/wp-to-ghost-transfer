@@ -1,0 +1,294 @@
+[
+    {
+        "name": "Issue 1",
+        "slug": "1"
+    },
+    {
+        "name": "Issue 2",
+        "slug": "2"
+    },
+    {
+        "name": "Issue 3",
+        "slug": "3"
+    },
+    {
+        "name": "Issue 4",
+        "slug": "4"
+    },
+    {
+        "name": "Issue 5",
+        "slug": "5"
+    },
+    {
+        "name": "Issue 6",
+        "slug": "6"
+    },
+    {
+        "name": "Issue 7",
+        "slug": "7"
+    },
+    {
+        "name": "Issue 8",
+        "slug": "8"
+    },
+    {
+        "name": "Issue 9",
+        "slug": "9"
+    },
+    {
+        "name": "Issue 10",
+        "slug": "10"
+    },
+    {
+        "name": "The Gazelle Staff",
+        "slug": "cap-the-gazelle-staff"
+    },
+    {
+        "name": "Carmen Germaine",
+        "slug": "cap-carmen-germaine"
+    },
+    {
+        "name": "Sam Ridgeway",
+        "slug": "cap-sam-ridgeway"
+    },
+    {
+        "name": "Besik Turazashvili",
+        "slug": "cap-besik-turazashvili"
+    },
+    {
+        "name": "Stephen Underwood",
+        "slug": "cap-stephen-underwood"
+    },
+    {
+        "name": "Nino Cricco",
+        "slug": "cap-nino-cricco"
+    },
+    {
+        "name": "post-format-video",
+        "slug": "post-format-video"
+    },
+    {
+        "name": "post-format-image",
+        "slug": "post-format-image"
+    },
+    {
+        "name": "Sam Ball",
+        "slug": "cap-sam-ball"
+    },
+    {
+        "name": "Issue 20",
+        "slug": "20"
+    },
+    {
+        "name": "Irene Paneda Fernandez",
+        "slug": "cap-irene-paneda-fernandez"
+    },
+    {
+        "name": "Juan Felipe Beltran",
+        "slug": "cap-juan-felipe-beltran"
+    },
+    {
+        "name": "Gabriel Figueroa Torres",
+        "slug": "cap-gabriel-figueroa-torres"
+    },
+    {
+        "name": "Mariam El Zoghbi",
+        "slug": "cap-mariam-el-zoghbi"
+    },
+    {
+        "name": "Issue 25",
+        "slug": "25"
+    },
+    {
+        "name": "Girri Palaniyapan",
+        "slug": "cap-girri-palaniyapan"
+    },
+    {
+        "name": "Nafisatou Mounkaila",
+        "slug": "cap-nafisatou-mounkaila"
+    },
+    {
+        "name": "Issue 29",
+        "slug": "29"
+    },
+    {
+        "name": "Issue 30",
+        "slug": "30"
+    },
+    {
+        "name": "Issue 31",
+        "slug": "31"
+    },
+    {
+        "name": "Anniversary Issue",
+        "slug": "32"
+    },
+    {
+        "name": "The Labor Issue",
+        "slug": "33"
+    },
+    {
+        "name": "Issue 34",
+        "slug": "34"
+    },
+    {
+        "name": "Corey Meyer",
+        "slug": "cap-corey-meyer"
+    },
+    {
+        "name": "Emma Leathley",
+        "slug": "cap-emma-leathley"
+    },
+    {
+        "name": "Olivia Bergenn",
+        "slug": "cap-olivia-bergenn"
+    },
+    {
+        "name": "Amelia Kahn",
+        "slug": "cap-amelia-kahn"
+    },
+    {
+        "name": "Mohammed Omar",
+        "slug": "cap-mohammed-omar"
+    },
+    {
+        "name": "World Cup Issue",
+        "slug": "40"
+    },
+    {
+        "name": "Tiantian Zheng",
+        "slug": "cap-tiantian-zheng"
+    },
+    {
+        "name": "Student Government Executive Board",
+        "slug": "cap-student-government-executive-board"
+    },
+    {
+        "name": "Felipe De La Hoz",
+        "slug": "cap-felipe-de-la-hoz"
+    },
+    {
+        "name": "Arsh Harjani",
+        "slug": "cap-arsh-harjani"
+    },
+    {
+        "name": "Jeffrey Mei",
+        "slug": "cap-jeffrey-mei"
+    },
+    {
+        "name": "Issue 46",
+        "slug": "46"
+    },
+    {
+        "name": "Issue 47",
+        "slug": "47"
+    },
+    {
+        "name": "Faith and Belief",
+        "slug": "48"
+    },
+    {
+        "name": "Issue 49",
+        "slug": "49"
+    },
+    {
+        "name": "Issue 50",
+        "slug": "50"
+    },
+    {
+        "name": "Issue 51",
+        "slug": "51"
+    },
+    {
+        "name": "Issue 52",
+        "slug": "52"
+    },
+    {
+        "name": "Issue 53",
+        "slug": "53"
+    },
+    {
+        "name": "The Music Issue",
+        "slug": "54"
+    },
+    {
+        "name": "Issue 55",
+        "slug": "55"
+    },
+    {
+        "name": "Issue 56",
+        "slug": "56"
+    },
+    {
+        "name": "Issue 57",
+        "slug": "57"
+    },
+    {
+        "name": "Issue 58",
+        "slug": "58"
+    },
+    {
+        "name": "Issue 59",
+        "slug": "59"
+    },
+    {
+        "name": "Issue 60",
+        "slug": "60"
+    },
+    {
+        "name": "Issue 61",
+        "slug": "61"
+    },
+    {
+        "name": "Issue 62",
+        "slug": "62"
+    },
+    {
+        "name": "Shehroze Khan",
+        "slug": "cap-shehroze-khan"
+    },
+    {
+        "name": "Mira Flores",
+        "slug": "cap-mira-flores"
+    },
+    {
+        "name": "Alex Bazeley",
+        "slug": "cap-alex-bazeley"
+    },
+    {
+        "name": "Peter Hadvab",
+        "slug": "cap-peter-hadvab"
+    },
+    {
+        "name": "Advice",
+        "slug": "advice"
+    },
+    {
+        "name": "Jocilyn Estes",
+        "slug": "cap-jocilyn-estes"
+    },
+    {
+        "name": "Warda Malik",
+        "slug": "cap-warda-malik"
+    },
+    {
+        "name": "Shakeel Kazmi",
+        "slug": "cap-shakeel-kazmi"
+    },
+    {
+        "name": "Pranav Mehta",
+        "slug": "cap-pranav-mehta"
+    },
+    {
+        "name": "Carlos Alberto Escobar",
+        "slug": "cap-carlos-alberto-escobar"
+    },
+    {
+        "name": "Carlos Alberto Escobar",
+        "slug": "cap-carlos-alberto-escobar-2"
+    },
+    {
+        "name": "Leena Asfour",
+        "slug": "cap-leena-asfour"
+    }
+]
