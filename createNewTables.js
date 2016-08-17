@@ -28,10 +28,9 @@ const MAX_BIOGRAPHY_LENGTH = 255;
 // Start of script
 knex.schema
 // Reset database
-.dropTableIfExists('issues_posts')
 .dropTableIfExists('teams_authors')
 .dropTableIfExists('authors_posts')
-.dropTableIfExists('gazelle_posts')
+.dropTableIfExists('posts_meta')
 .dropTableIfExists('issues_categories_order')
 .dropTableIfExists('categories_posts_order')
 .dropTableIfExists('authors')
@@ -50,10 +49,6 @@ knex.schema
 	table.string('slug', MAX_NAME_OR_SLUG_LENGTH).unique().notNullable();
 	table.string('name', MAX_NAME_OR_SLUG_LENGTH).unique().notNullable();
 	table.string('description', MAX_DESCRIPTION_LENGTH);
-	// Max 65,535 characters should be enough and is also what Ghost uses itself
-	// And I left it nullable, then we can just input the default image
-	// if an author is yet to give a picture of themselves
-	table.text('image');
 })
 // Create issues table
 .createTable('issues', (table) => {
@@ -63,7 +58,7 @@ knex.schema
 	table.date('published_at');
 })
 // Create gazelle_posts table
-.createTable('gazelle_posts', (table) => {
+.createTable('posts_meta', (table) => {
 	table.integer('id').primary().unsigned().references('id').inTable('posts');
 	table.integer('category_id').unsigned().references('id').inTable('categories');
 	table.string('description', MAX_DESCRIPTION_LENGTH);
@@ -81,6 +76,9 @@ knex.schema
 	// constrain our authors to short biographies or not.
 	// I left it nullable, we can handle default values while rendering
 	table.string('biography', MAX_BIOGRAPHY_LENGTH)
+	// Max 65,535 characters should be enough and is also what Ghost uses itself
+	// And I left it nullable, then we can just input the default image
+	// if an author is yet to give a picture of themselves
 	table.text('image')
 })
 // Create authors_posts table
@@ -97,20 +95,13 @@ knex.schema
 	table.integer('author_id').unsigned().notNullable().references('id').inTable('authors');
 	table.index(['team_id', 'author_id'], 'uniqueness_index');
 })
-// Create issues_posts table
-.createTable('issues_posts', (table) => {
-	table.increments('id').primary().unsigned();
-	table.integer('post_id').unsigned().notNullable().references('id').inTable('posts');
-	table.integer('issue_id').unsigned().notNullable().references('id').inTable('issues');
-	table.index(['post_id', 'issue_id'], 'uniqueness_index');
-})
 // Create issues_categories_order table
 .createTable('issues_categories_order', (table) => {
 	table.increments('id').primary().unsigned();
 	table.integer('issue_id').unsigned().notNullable().references('id').inTable('issues');
 	table.integer('category_id').unsigned().notNullable().references('id').inTable('categories');
-	table.integer('sort_order').unsigned().notNullable().defaultTo(0);
-	table.index(['issue_id', 'category_id', 'sort_order'], 'uniqueness_index');
+	table.integer('categories_order').unsigned().notNullable().defaultTo(0);
+	table.index(['issue_id', 'category_id', 'categories_order'], 'uniqueness_index');
 })
 // Create categories_posts_order table
 .createTable('categories_posts_order', (table) => {
@@ -118,8 +109,8 @@ knex.schema
 	table.integer('issue_id').unsigned().notNullable().references('id').inTable('issues');
 	table.integer('category_id').unsigned().notNullable().references('id').inTable('categories');
 	table.integer('post_id').unsigned().notNullable().references('id').inTable('posts');
-	table.integer('sort_order').unsigned().notNullable().defaultTo(0);
-	table.index(['issue_id', 'category_id', 'post_id', 'sort_order'], 'uniqueness_index');
+	table.integer('posts_order').unsigned().notNullable().defaultTo(0);
+	table.index(['issue_id', 'category_id', 'post_id', 'posts_order'], 'uniqueness_index');
 })
 .then((okPacketsArray) => {
 	console.log("success");
