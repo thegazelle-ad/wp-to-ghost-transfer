@@ -1,5 +1,10 @@
+var x = true;
 var treat = function(html) {
   html = html.$children.join('');
+  if (x) {
+    console.error(html);
+    x = false;
+  }
   html = html.replace(/\r\n/g, "\n");
   html = html.replace(/\r/g, "\n");
   html = html.replace(/\[((source)?code)[^\]]*\]\n*([\s\S]*?)\n*\[\/\1\]/g, '<pre><code>$3</code></pre>');
@@ -17,13 +22,13 @@ var treatHTML = function(html) {
   return html;
 }
 
-var reformatAudioShortcode = function(html){ 
+var reformatAudioShortcode = function(html){
   var sources = html.match(/["'](.+?)["']/g).map(function(source) { return '<source src=' + source + '>'}).join('');
   return '<audio controls>' + sources + '</audio>';
 }
 
 var reformatVideoShortcode = function(html) {
-  var sources = html.match(/"(.+?)"/g).map(function(source) { 
+  var sources = html.match(/"(.+?)"/g).map(function(source) {
     return '<source src='+ source +' type="video/' + source.match(/['"](.*)\.([^.]*)['"]$/)[2] + '">'
   }).join('');
   return '<video controls>' + sources + '</video>'
@@ -68,7 +73,7 @@ exports.fromStream = function(stream) {
     var posts_tags = [];
     var author2user = {};
     var termname2tag = {};
-    var errorCheck = true
+    var errorCheck = false
 
     xml.on('endElement: pubDate', function(pd) {
       if (errorCheck) {

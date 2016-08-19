@@ -1,19 +1,70 @@
-'use strict';
+/* TODO:
+What we need for a ghost import is:
+ID,
+title,
+slug,
+markdown,
+html,
+status: published,
+published_at,
+rest null
+*/
+
+/* Following functions are all borrowed from the wp2ghost repo at URL:
+https://github.com/jonhoo/wp2ghost
+MIT License
+Copyright (c) 2014 Jon Gjengset
+*/
+var treatToMarkdown = function(html) {
+  html = html.replace(/\r\n/g, "\n");
+  html = html.replace(/\r/g, "\n");
+  html = html.replace(/\[((source)?code)[^\]]*\]\n*([\s\S]*?)\n*\[\/\1\]/g, '<pre><code>$3</code></pre>');
+  html = html.replace(/\[caption.+\](.+)\[\/caption\]/g, '$1');
+  return html;
+}
+
+var treatToHtml = function(html) {
+  html = treatToMarkdown(html);
+  html = html.replace(/\n\n/g, '<p>');
+  html = html.replace(/<pre>(.*?)<\/pre>/g, function(match) { return match.replace(/<p>/g, "\n\n"); });
+  html = html.replace(/<p><pre>/g, "<pre>");
+  return html;
+}
+
+// From ghost/core/server/models/base.js
+var slugify = function(title) {
+  // Remove URL reserved chars: `:/?#[]@!$&'()*+,;=` as well as `\%<>|^~£"`
+  slug = title.replace(/[:\/\?#\[\]@!$&'()*+,;=\\%<>\|\^~£"]/g, '')
+              .replace(/(\s|\.)/g, '-')
+              .replace(/-+/g, '-')
+              .toLowerCase();
+
+  slug = slug.charAt(slug.length - 1) === '-' ? slug.substr(0, slug.length - 1) : slug;
+  slug = /^(ghost|ghost\-admin|admin|wp\-admin|wp\-login|dashboard|logout|login|signin|signup|signout|register|archive|archives|category|categories|tag|tags|page|pages|post|posts|user|users|rss)$/g
+         .test(slug) ? slug + '-post' : slug;
+  return slug;
+}
+// Borrowed functions end here
+
+
+
+
 
 // file system
-let fs = require('fs');
+var fs = require('fs');
+var _ = require('lodash');
 
 // Database variables
 
-const DATABASE_HOST = "localhost";
-const DATABASE_USER_NAME = "root";
-const DATABASE_PASSWORD = "";
-const WORDPRESS_DATABASE_NAME = "gazelle_old";
-const GHOST_DATABASE_NAME = "gazelle_rebuild";
+var DATABASE_HOST = "localhost";
+var DATABASE_USER_NAME = "root";
+var DATABASE_PASSWORD = "password";
+var WORDPRESS_DATABASE_NAME = "gazelle_wordpress";
+var GHOST_DATABASE_NAME = "gazelle_ghost";
 
 // Wordpress boilerplate
 
-const wordpressQueryBuilder = require('knex')({
+var wordpressQueryBuilder = require('knex')({
   // Using MariaDB
   client: 'mysql',
   connection: {
@@ -24,17 +75,17 @@ const wordpressQueryBuilder = require('knex')({
   }
 });
 
-const wp_terms = 'wp_terms';
-const wp_title = 'post_title';
-const wp_name = 'name'
-const wp_taxonomy = 'wp_term_taxonomy';
-const wp_termId = 'term_id';
-const wp_taxonomyId = 'term_taxonomy_id';
-const wp_relationships = 'wp_term_relationships';
-const wp_posts = 'wp_posts';
-const wp_objectId = 'object_id';
-const wp_postId = "ID";
-const taxonomy = 'taxonomy';
+var wp_terms = 'wp_terms';
+var wp_title = 'post_title';
+var wp_name = 'name'
+var wp_taxonomy = 'wp_term_taxonomy';
+var wp_termId = 'term_id';
+var wp_taxonomyId = 'term_taxonomy_id';
+var wp_relationships = 'wp_term_relationships';
+var wp_posts = 'wp_posts';
+var wp_objectId = 'object_id';
+var wp_postId = "ID";
+var taxonomy = 'taxonomy';
 
 function postToWordpressTermQuery(queryTerm) {
   return wordpressQueryBuilder
@@ -52,7 +103,7 @@ function disconnectWordpress() {
 
 // Ghost boilerplate
 
-const ghostQueryBuilder = require('knex')({
+var ghostQueryBuilder = require('knex')({
   // Using MariaDB
   client: 'mysql',
   connection: {
@@ -78,7 +129,7 @@ function getWpTerm(termSlug, fileName) {
     .innerJoin(wp_taxonomy, wp_terms+'.'+wp_termId, '=', wp_taxonomy+'.'+wp_taxonomyId)
   .where(wp_taxonomy+'.'+taxonomy, '=', termSlug)
   .then((rows) => {
-    const slugs = rows.map((row) => {
+    var slugs = rows.map((row) => {
       return row.slug;
     })
     wordpressQueryBuilder
@@ -100,10 +151,10 @@ function disconnectIfDone() {
     disconnectGhost();
   }
 }
-
+/*
 // counts how many queries are done
-let functionCount = 0;
-let cnt = 0;
+var functionCount = 0;
+var cnt = 0;
 // export actually happens here
 getWpTerm('category', 'categories');
 
@@ -126,3 +177,73 @@ ghostQueryBuilder
   postToWordpressTermQuery
 })
 
+*/
+
+wordpressQueryBuilder
+.select('ID', 'post_title', 'post_name', 'post_date_gmt', 'post_date', 'post_status', 'post_content')
+.from('wp_posts')
+.whereIn('post_status', ['draft', 'publish']).andWhere('post_type', '=', 'post').andWhereNot('post_status', '=', 'auto-draft').then((rows) => {
+  var posts = rows.map((row) => {
+    var date = new Date(row["post_date_gmt"]);
+    if (!date.getTime()) {
+      date = new Date(row["post_date"]);
+    }
+    var status = row["post_status"];
+    if (status === "publish") {
+      status = "published";
+    }
+    var post = {
+      id: row.ID,
+      title: row["post_title"],
+      slug: row["post_name"] || slugify(row["post_title"]),
+      markdown: treatToMarkdown(row["post_content"]),
+      html: treatToHtml(row["post_content"]),
+      image: null,
+      featured: 0,
+      page: 0,
+      status: status,
+      language: "en_US",
+      visibility: "public",
+      "meta_title": null,
+      "meta_description": null,
+      "author_id": 1,
+      "created_at": date.getTime(),
+      "created_by": 1,
+      "updated_at": date.getTime(),
+      "updated_by": 1,
+      "published_at": date.getTime(),
+      "published_by": 1,
+    };
+    return post;
+  });
+  var jsonOut = {
+    meta: {
+      "exported_on": Date.now(),
+      "version": "004",
+    },
+    data: {
+      posts: cleanUp(posts),
+    },
+  };
+  fs.writeFileSync('jsonData/posts.json', JSON.stringify(jsonOut, null, 4));
+  disconnectGhost();
+  disconnectWordpress();
+})
+
+function cleanUp(posts) {
+  return posts.filter((post) => {
+    if (!post.title && !post.slug) {
+      return false;
+    }
+    if (!post.markdown && !post.markdown) {
+      return false;
+    }
+    _.forEach(post, (value) => {
+      if (!value && value !== null && value !== 0) {
+        console.log(post);
+        throw new Error("missing value");
+      }
+    });
+    return true;
+  })
+}

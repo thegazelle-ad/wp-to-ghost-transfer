@@ -55,7 +55,7 @@ knex.schema
 	table.increments('id').primary().unsigned();
 	table.string('slug', MAX_NAME_OR_SLUG_LENGTH).unique().notNullable();
 	table.string('name', MAX_NAME_OR_SLUG_LENGTH).unique().notNullable();
-	table.date('published_at');
+	table.dateTime('published_at');
 })
 // Create gazelle_posts table
 .createTable('posts_meta', (table) => {
@@ -63,7 +63,7 @@ knex.schema
 	table.integer('category_id').unsigned().references('id').inTable('categories');
 	table.string('description', MAX_DESCRIPTION_LENGTH);
 	table.integer('views').unsigned().notNullable().defaultTo(0);
-	table.date('gazelle_published_at');
+	table.dateTime('gazelle_published_at');
 })
 // Create authors table
 .createTable('authors', (table) => {
