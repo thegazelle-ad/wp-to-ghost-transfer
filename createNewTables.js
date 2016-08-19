@@ -9,8 +9,8 @@ const knex = require('knex')({
   connection: {
     host: "localhost",
     user: "root",
-    password: "",
-    database: "ghost_copy"
+    password: "password",
+    database: "gazelle_ghost"
   }
 });
 
