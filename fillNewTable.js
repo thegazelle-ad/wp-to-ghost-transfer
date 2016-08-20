@@ -35,7 +35,6 @@ let categories = [
   {name: "Video", slug: "video"},
   {name: "Media", slug: "media"},
   {name: "Research", slug: "research"},
-  {name: "Advice", slug: "advice"},
 ]
 
 // Which command do you wish to run?
@@ -148,7 +147,7 @@ if (choiceFlag === "meta") {
                   categoryId = categorySlugToId["features"];
                   break;
                case "open-campus":
-                  categoryId = categorySlugToId["media"];
+                  categoryId = categorySlugToId["video"];
                   break;
                 default:
                   console.log("2 categories but not as expected");
@@ -195,6 +194,45 @@ if (choiceFlag === "meta") {
           // push object to array
           insertArray.push(insertObject);
         });
+        // Hardcode a few special values
+        insertArray.push(
+          {
+            id: 699,
+            description: null,
+            "gazelle_published_at": "2015-04-04 14:02:08",
+            "category_id": categorySlugToId['news'],
+            views: 0,
+          },
+          {
+            id: 697,
+            description: null,
+            "gazelle_published_at": "2015-04-11 12:41:31",
+            "category_id": categorySlugToId['features'],
+            views: 0,
+          },
+          {
+            id: 549,
+            description: null,
+            "gazelle_published_at": "2015-05-02 13:10:05",
+            "category_id": categorySlugToId['news'],
+            views: 0,
+          },
+          {
+            id: 548,
+            description: null,
+            "gazelle_published_at": "2015-05-09 14:00:48",
+            "category_id": categorySlugToId['features'],
+            views: 0,
+          },
+          {
+            // The Welcome-To-Ghost post
+            id: 1,
+            description: null,
+            "gazelle_published_at": null,
+            "category_id": categorySlugToId['uncategorized'],
+            views: 0,
+          }
+        );
         ghost('posts_meta').insert(insertArray).then(() => {}).then(() => {
           disconnect();
           console.log("success");
