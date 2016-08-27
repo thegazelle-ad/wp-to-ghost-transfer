@@ -54,8 +54,10 @@ knex.schema
 .createTable('issues', (table) => {
 	table.increments('id').primary().unsigned();
 	table.string('slug', MAX_NAME_OR_SLUG_LENGTH).unique().notNullable();
-	table.string('name', MAX_NAME_OR_SLUG_LENGTH).unique().notNullable();
-	table.dateTime('published_at');
+	table.string('name', MAX_NAME_OR_SLUG_LENGTH).notNullable();
+	// Only store the date here, not the time
+	table.date('published_at');
+	table.integer('issue_order').unique().unsigned().notNullable();
 })
 // Create gazelle_posts table
 .createTable('posts_meta', (table) => {
@@ -69,7 +71,7 @@ knex.schema
 .createTable('authors', (table) => {
 	table.increments('id').primary().unsigned();
 	table.string('slug', MAX_NAME_OR_SLUG_LENGTH).unique().notNullable();
-	table.string('name', MAX_NAME_OR_SLUG_LENGTH).unique().notNullable();
+	table.string('name', MAX_NAME_OR_SLUG_LENGTH).notNullable();
 	table.integer('team_id').unsigned().references('id').inTable('teams');
 	table.string('job_title', MAX_NAME_OR_SLUG_LENGTH);
 	// This could also be made into a text, depends on whether we want to

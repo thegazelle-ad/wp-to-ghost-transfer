@@ -179,71 +179,71 @@ ghostQueryBuilder
 
 */
 
-wordpressQueryBuilder
-.select('ID', 'post_title', 'post_name', 'post_date_gmt', 'post_date', 'post_status', 'post_content')
-.from('wp_posts')
-.whereIn('post_status', ['draft', 'publish']).andWhere('post_type', '=', 'post').andWhereNot('post_status', '=', 'auto-draft').then((rows) => {
-  var posts = rows.map((row) => {
-    var date = new Date(row["post_date_gmt"]);
-    if (!date.getTime()) {
-      date = new Date(row["post_date"]);
-    }
-    var status = row["post_status"];
-    if (status === "publish") {
-      status = "published";
-    }
-    var post = {
-      id: row.ID,
-      title: row["post_title"],
-      slug: row["post_name"] || slugify(row["post_title"]),
-      markdown: treatToMarkdown(row["post_content"]),
-      html: treatToHtml(row["post_content"]),
-      image: null,
-      featured: 0,
-      page: 0,
-      status: status,
-      language: "en_US",
-      visibility: "public",
-      "meta_title": null,
-      "meta_description": null,
-      "author_id": 1,
-      "created_at": date.getTime(),
-      "created_by": 1,
-      "updated_at": date.getTime(),
-      "updated_by": 1,
-      "published_at": date.getTime(),
-      "published_by": 1,
-    };
-    return post;
-  });
-  var jsonOut = {
-    meta: {
-      "exported_on": Date.now(),
-      "version": "004",
-    },
-    data: {
-      posts: cleanUp(posts),
-    },
-  };
-  fs.writeFileSync('jsonData/posts.json', JSON.stringify(jsonOut, null, 4));
-  disconnectGhost();
-  disconnectWordpress();
-})
+// wordpressQueryBuilder
+// .select('ID', 'post_title', 'post_name', 'post_date_gmt', 'post_date', 'post_status', 'post_content')
+// .from('wp_posts')
+// .whereIn('post_status', ['draft', 'publish']).andWhere('post_type', '=', 'post').then((rows) => {
+//   var posts = rows.map((row) => {
+//     var date = new Date(row["post_date_gmt"]);
+//     if (!date.getTime()) {
+//       date = new Date(row["post_date"]);
+//     }
+//     var status = row["post_status"];
+//     if (status === "publish") {
+//       status = "published";
+//     }
+//     var post = {
+//       id: row.ID,
+//       title: row["post_title"],
+//       slug: row["post_name"] || slugify(row["post_title"]),
+//       markdown: treatToMarkdown(row["post_content"]),
+//       html: treatToHtml(row["post_content"]),
+//       image: null,
+//       featured: 0,
+//       page: 0,
+//       status: status,
+//       language: "en_US",
+//       visibility: "public",
+//       "meta_title": null,
+//       "meta_description": null,
+//       "author_id": 1,
+//       "created_at": date.getTime(),
+//       "created_by": 1,
+//       "updated_at": date.getTime(),
+//       "updated_by": 1,
+//       "published_at": date.getTime(),
+//       "published_by": 1,
+//     };
+//     return post;
+//   });
+//   var jsonOut = {
+//     meta: {
+//       "exported_on": Date.now(),
+//       "version": "004",
+//     },
+//     data: {
+//       posts: cleanUp(posts),
+//     },
+//   };
+//   fs.writeFileSync('jsonData/posts.json', JSON.stringify(jsonOut, null, 4));
+//   disconnectGhost();
+//   disconnectWordpress();
+// })
 
-function cleanUp(posts) {
-  return posts.filter((post) => {
-    if (!post.title && !post.slug) {
-      return false;
-    }
-    if (!post.markdown && !post.markdown) {
-      return false;
-    }
-    _.forEach(post, (value) => {
-      if (!value && value !== null && value !== 0) {
-        console.log(post);
-        throw new Error("missing value");
-      }
-    });
-    return true;
-  })
-}
+// function cleanUp(posts) {
+//   return posts.filter((post) => {
+//     if (!post.title && !post.slug) {
+//       return false;
+//     }
+//     if (!post.html && !post.markdown) {
+//       return false;
+//     }
+//     _.forEach(post, (value) => {
+//       if (!value && value !== null && value !== 0) {
+//         console.log(post);
+//         throw new Error("missing value");
+//       }
+//     });
+//     return true;
+//   })
+// }
