@@ -146,38 +146,39 @@ function getWpTerm(termSlug, fileName) {
 
 function disconnectIfDone() {
   cnt++;
+  console.log(cnt);
   if (cnt >= functionCount) {
     disconnectWordpress();
     disconnectGhost();
   }
 }
-/*
-// counts how many queries are done
-var functionCount = 0;
-var cnt = 0;
-// export actually happens here
-getWpTerm('category', 'categories');
 
-getWpTerm('author', 'authors');
+// // counts how many queries are done
+// var functionCount = 0;
+// var cnt = 0;
+// // export actually happens here
+// getWpTerm('category', 'categories');
 
-getWpTerm('issue', 'issues');
+// getWpTerm('author', 'authors');
 
-getWpTerm('nav_menu', 'nav_menues');
+// getWpTerm('issue', 'issues');
 
-getWpTerm('post_format', 'post_formats');
+// getWpTerm('nav_menu', 'nav_menues');
 
-getWpTerm('post_tag', 'post_tags');
+// getWpTerm('post_format', 'post_formats');
 
-var gazelle_post_data = [];
-functionCount++;
-ghostQueryBuilder
-.select('slug', 'id')
-.from('posts')
-.then((rows) => {
-  postToWordpressTermQuery
-})
+// getWpTerm('post_tag', 'post_tags');
 
-*/
+// var gazelle_post_data = [];
+// functionCount++;
+// ghostQueryBuilder
+// .select('slug', 'id')
+// .from('posts')
+// .then((rows) => {
+//   postToWordpressTermQuery
+// })
+
+
 
 // wordpressQueryBuilder
 // .select('ID', 'post_title', 'post_name', 'post_date_gmt', 'post_date', 'post_status', 'post_content')

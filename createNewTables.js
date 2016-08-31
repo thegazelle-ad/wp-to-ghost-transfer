@@ -32,7 +32,7 @@ knex.schema
 .dropTableIfExists('authors_posts')
 .dropTableIfExists('posts_meta')
 .dropTableIfExists('issues_categories_order')
-.dropTableIfExists('categories_posts_order')
+.dropTableIfExists('issues_posts_order')
 .dropTableIfExists('authors')
 .dropTableIfExists('categories')
 .dropTableIfExists('teams')
@@ -53,7 +53,6 @@ knex.schema
 // Create issues table
 .createTable('issues', (table) => {
 	table.increments('id').primary().unsigned();
-	table.string('slug', MAX_NAME_OR_SLUG_LENGTH).unique().notNullable();
 	table.string('name', MAX_NAME_OR_SLUG_LENGTH).notNullable();
 	// Only store the date here, not the time
 	table.date('published_at');
@@ -106,13 +105,14 @@ knex.schema
 	table.index(['issue_id', 'category_id', 'categories_order'], 'uniqueness_index');
 })
 // Create categories_posts_order table
-.createTable('categories_posts_order', (table) => {
+.createTable('issues_posts_order', (table) => {
 	table.increments('id').primary().unsigned();
 	table.integer('issue_id').unsigned().notNullable().references('id').inTable('issues');
-	table.integer('category_id').unsigned().notNullable().references('id').inTable('categories');
+	table.integer('type').unsigned().notNullable();
 	table.integer('post_id').unsigned().notNullable().references('id').inTable('posts');
 	table.integer('posts_order').unsigned().notNullable().defaultTo(0);
-	table.index(['issue_id', 'category_id', 'post_id', 'posts_order'], 'uniqueness_index');
+	// When we use type we can't create the uniqueness index
+	// table.index(['issue_id', 'category_id', 'post_id', 'posts_order'], 'uniqueness_index');
 })
 .then((okPacketsArray) => {
 	console.log("success");

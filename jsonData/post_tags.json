@@ -166,5 +166,41 @@
     {
         "name": "Larayb Abrar",
         "slug": "cap-larayb-abrar"
+    },
+    {
+        "name": "Gabriel Rabin",
+        "slug": "cap-gabriel-rabin"
+    },
+    {
+        "name": "on campus",
+        "slug": "on-campus"
+    },
+    {
+        "name": "on camplus",
+        "slug": "on-camplus"
+    },
+    {
+        "name": "creative",
+        "slug": "creative-2"
+    },
+    {
+        "name": "video",
+        "slug": "video-2"
+    },
+    {
+        "name": "in foucs",
+        "slug": "in-foucs"
+    },
+    {
+        "name": "community",
+        "slug": "community"
+    },
+    {
+        "name": "oncampus",
+        "slug": "oncampus"
+    },
+    {
+        "name": "on cmapus",
+        "slug": "on-cmapus"
     }
 ]

@@ -55,23 +55,28 @@ let categories = [
   {name: "Research", slug: "research"},
 ]
 
-// The available functions are:
-// categories
-// post_meta
-// issues
+// Use the choiceFlag to choose which table to insert
+
+// The available choiceFlags are:
+// cat
+// meta
+// issue
+// author
 // authors_posts
-// authors
+// order
+
+const choiceFlag = "order";
 
 // We will let teams table start out empty and editor's can handle it themselves
 
-export function categories() {
+if (choiceFlag === "cat") {
 // Fill categories table
   ghost('categories').insert(categories).then(() => {}).then(() => {
     disconnect();
   });
 }
 
-export function post_meta() {
+else if (choiceFlag === "meta") {
 // Fill posts_meta table
   const manuallyEditedSlugs = ['iran', 'iran2', 'gabo', 'gabo2', 'welcome-to-ghost'];
 
@@ -261,7 +266,7 @@ export function post_meta() {
 }
 
 
-export function authors() {
+else if (choiceFlag === "author") {
 // Insert authors table
   wordpress.distinct().select('name', 'slug')
   .from('wp_posts')
@@ -285,13 +290,13 @@ export function authors() {
       return true;
     });
     // Other than name and slug will simply be nulled as we don't have the other information in database
-    // ghost('authors')
-    // .insert(authorRows)
-    // .then(disconnect);
-  })
+    ghost('authors')
+    .insert(authorRows)
+    .then(disconnect);
+  });
 }
 
-export function issues() {
+else if (choiceFlag === "issue") {
 // Insert issues table
   wordpress.distinct().select('name', 'slug')
   .from('wp_posts')
@@ -354,16 +359,18 @@ export function issues() {
           throw new Error("There were no posts in the issue: " + issue.name);
         }
         let name = issue.name;
-        let slug = slugify(issue.name);
+        // Not using slug anymore, we switched to using issue_order, but I'll just keep it here
+
+        // let slug = slugify(issue.name);
+
         // Assuming the issues are fetched chronologically by the select statement
         // Because this is also what it seemed like.
         // Remember to also double check that everything is correct in the database though.
         let order = index+1;
         return {
           name: name,
-          slug: slug,
-          "issue_order": order,
-          "published_at": publishDate,
+          issue_order: order,
+          published_at: publishDate,
         };
       });
       ghost('issues').insert(insertArray)
@@ -372,7 +379,7 @@ export function issues() {
   });
 }
 
-export function authors_posts() {
+else if (choiceFlag === "authors_posts") {
 // Insert authors_posts table
   function normalizeAuthor(slug) {
     if (slug.substring(0, 4) === "cap-") {
@@ -412,7 +419,7 @@ export function authors_posts() {
           return true;
         });
 
-        let insertArray = wordpressPosts.map((wpPost) => {
+        const insertArray = wordpressPosts.map((wpPost) => {
           let wordpressPostSlug = wpPost.post_name || slugify(wpPost.post_title);
           let wordpressAuthorSlug = normalizeAuthor(wpPost.slug);
           let ghostPostId = ghostPosts.find((post) => {
@@ -448,4 +455,164 @@ export function authors_posts() {
       });
     });
   });
+}
+
+else if (choiceFlag === "order") {
+// Insert categories_order and posts_order table
+  wordpress.select('name', 'post_name', 'post_title')
+  .from('wp_posts')
+  .innerJoin('wp_term_relationships', 'wp_term_relationships.object_id', '=', 'wp_posts.ID')
+  .innerJoin('wp_term_taxonomy', 'wp_term_taxonomy.term_taxonomy_id', '=', 'wp_term_relationships.term_taxonomy_id')
+  .innerJoin('wp_terms', 'wp_terms.term_id', '=', 'wp_term_taxonomy.term_id')
+  .whereIn('post_status', ['draft', 'publish']).andWhere('post_type', '=', 'post').andWhere('wp_term_taxonomy.taxonomy', '=', 'issue')
+  .then((posts_issues) => {
+    wordpress.select('post_name', 'post_title')
+    .from('wp_posts')
+    .innerJoin('wp_term_relationships', 'wp_term_relationships.object_id', '=', 'wp_posts.ID')
+    .innerJoin('wp_term_taxonomy', 'wp_term_taxonomy.term_taxonomy_id', '=', 'wp_term_relationships.term_taxonomy_id')
+    .innerJoin('wp_terms', 'wp_terms.term_id', '=', 'wp_term_taxonomy.term_id')
+    .whereIn('post_status', ['draft', 'publish']).andWhere('post_type', '=', 'post').andWhere('wp_term_taxonomy.taxonomy', '=', 'post_tag')
+    .andWhere('wp_terms.slug', '=', 'pick').andWhere('name', '=', 'pick')
+    .then((posts_picks) => {
+      ghost.select('slug', 'category_id', 'posts.id')
+      .from('posts')
+      .innerJoin('posts_meta', 'posts_meta.id', '=', 'posts.id')
+      .whereNotNull('gazelle_published_at')
+      .then((posts_categories) => {
+        ghost.select('name', 'id')
+        .from('issues')
+        .then((issues) => {
+          const issues_categoriesInsert = [];
+          const issues_postsInsert = [];
+          const postsToDelete = [];
+          issues.forEach((issue) => {
+            const posts = posts_categories.filter((ghostPost) => {
+              const wpPost = posts_issues.find((wordpressPost) => {
+                const wordpressPostSlug = wordpressPost.post_name || slugify(wordpressPost.post_title);
+                return wordpressPostSlug === ghostPost.slug;
+              });
+              if (wpPost === undefined) {
+                if (postsToDelete.find((post) => {return post.id === ghostPost.id}) === undefined) {
+                  postsToDelete.push(ghostPost);
+                }
+                return false;
+              }
+              // wpPost.name is the name of the issue
+              return wpPost.name === issue.name;
+            });
+            // console.log("posts in issue:", posts.length);
+
+            const picks = [];
+            // Get the first 3 picked articles and ignore rest
+            // Delete them from posts array and put them in picks
+            posts.filter((post) => {
+              if (picks.length === 3) {
+                return true;
+              }
+              const postIsPick = posts_picks.find((pickPost) => {
+                const wordpressPostSlug = pickPost.post_name || slugify(pickPost.post_title);
+                return wordpressPostSlug === post.slug;
+              }) !== undefined;
+              if (postIsPick) {
+                picks.push(post);
+                return false;
+              }
+              return true;
+            });
+            const categories = [];
+            posts.forEach((post) => {
+              if (categories.find((catId) => {return catId === post.category_id}) === undefined) {
+                categories.push(post.category_id);
+              }
+            });
+            // console.log(categories.length);
+
+            const postsByCategory = {};
+            categories.forEach((catId) => {
+              postsByCategory[catId] = [];
+              posts.forEach((post) => {
+                if (post.category_id === catId) {
+                  postsByCategory[catId].push(post);
+                }
+              })
+            })
+
+            // fill issues_categoriesInsert
+            categories.forEach((catId, index) => {
+              issues_categoriesInsert.push({
+                issue_id: issue.id,
+                category_id: catId,
+                categories_order: index,
+              });
+            });
+
+            // fill issues_postsInsert
+            if (picks.length !== 3) {
+              console.log(JSON.stringify(picks, null, 4));
+              throw new Error("not 3 picks");
+            }
+            // type 1 is featured
+            issues_postsInsert.push({
+              issue_id: issue.id,
+              type: 1,
+              post_id: picks[0].id,
+              posts_order: 0,
+            });
+            // type 2 is editor's pick
+            issues_postsInsert.push({
+              issue_id: issue.id,
+              type: 2,
+              post_id: picks[1].id,
+              posts_order: 0,
+            });
+            issues_postsInsert.push({
+              issue_id: issue.id,
+              type: 2,
+              post_id: picks[2].id,
+              posts_order: 1,
+            });
+            _.forEach(postsByCategory, (category) => {
+              category.forEach((post, index) => {
+                issues_postsInsert.push({
+                  issue_id: issue.id,
+                  type: 0,
+                  post_id: post.id,
+                  posts_order: index,
+                });
+              });
+            });
+          });
+          const idsToDelete = postsToDelete.map((post) => {return post.id});
+          console.log("Posts to be deleted because they have no issue");
+          console.log(postsToDelete.length);
+          console.log(JSON.stringify(postsToDelete, null, 4));
+          // console.log("data");
+          // console.log(JSON.stringify(issues_categoriesInsert, null, 4));
+          // console.log("data2\n\n\n\n");
+          // console.log(JSON.stringify(issues_postsInsert, null, 4));
+          // Delete the posts that need to be deleted
+          ghost('posts_meta').whereIn('id', idsToDelete).del()
+          .then(() => {
+            ghost('authors_posts').whereIn('post_id', idsToDelete).del()
+            .then(() => {
+              ghost('posts').whereIn('id', idsToDelete).del()
+              .then(() => {
+                // Insert orders
+                ghost('issues_posts_order').insert(issues_postsInsert)
+                .then(() => {
+                  ghost('issues_categories_order').insert(issues_categoriesInsert)
+                  .then(() => {console.log("success")})
+                  .then(disconnect());
+                });
+              });
+            });
+          });
+        });
+      });
+    });
+  });
+}
+
+else {
+  throw new Error("Incorrect choiceFlag input")
 }
