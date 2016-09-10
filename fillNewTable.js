@@ -7,6 +7,7 @@ const ghost = require('knex')({
     user: 'root',
     password: 'password',
     database: 'gazelle_ghost',
+    charset: 'utf8'
   }
 });
 
@@ -17,6 +18,7 @@ const wordpress = require('knex')({
     user: 'root',
     password: 'password',
     database: 'gazelle_wordpress',
+    charset: 'utf8'
   }
 });
 

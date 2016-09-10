@@ -10,7 +10,7 @@ const knex = require('knex')({
     host: "localhost",
     user: "root",
     password: "password",
-    database: "gazelle_ghost"
+    database: "the_gazelle"
   }
 });
 
@@ -25,7 +25,8 @@ const MAX_NAME_OR_SLUG_LENGTH = 70;
 const MAX_DESCRIPTION_LENGTH = 170;
 const MAX_BIOGRAPHY_LENGTH = 255;
 
-// Start of script
+
+// // Start of script
 knex.schema
 // Reset database
 .dropTableIfExists('teams_authors')
@@ -37,6 +38,7 @@ knex.schema
 .dropTableIfExists('categories')
 .dropTableIfExists('teams')
 .dropTableIfExists('issues')
+.dropTableIfExists('info_pages')
 // Create categories table
 .createTable('categories', (table) => {
 	table.increments('id').primary().unsigned();
@@ -60,8 +62,8 @@ knex.schema
 })
 // Create gazelle_posts table
 .createTable('posts_meta', (table) => {
-	table.integer('id').primary().unsigned().references('id').inTable('posts');
-	table.integer('category_id').unsigned().references('id').inTable('categories');
+	table.integer('id').primary().unsigned().references('id').inTable('posts').onUpdate('CASCADE').onDelete('CASCADE');
+	table.integer('category_id').unsigned().references('id').inTable('categories').onUpdate('CASCADE').onDelete('SET NULL');
 	table.string('description', MAX_DESCRIPTION_LENGTH);
 	table.integer('views').unsigned().notNullable().defaultTo(0);
 	table.dateTime('gazelle_published_at');
@@ -71,7 +73,7 @@ knex.schema
 	table.increments('id').primary().unsigned();
 	table.string('slug', MAX_NAME_OR_SLUG_LENGTH).unique().notNullable();
 	table.string('name', MAX_NAME_OR_SLUG_LENGTH).notNullable();
-	table.integer('team_id').unsigned().references('id').inTable('teams');
+	table.integer('team_id').unsigned().references('id').inTable('teams').onUpdate('CASCADE').onDelete('SET NULL');
 	table.string('job_title', MAX_NAME_OR_SLUG_LENGTH);
 	// This could also be made into a text, depends on whether we want to
 	// constrain our authors to short biographies or not.
@@ -85,34 +87,41 @@ knex.schema
 // Create authors_posts table
 .createTable('authors_posts', (table) => {
 	table.increments('id').primary().unsigned();
-	table.integer('author_id').unsigned().notNullable().references('id').inTable('authors');
-	table.integer('post_id').unsigned().notNullable().references('id').inTable('posts');
+	table.integer('author_id').unsigned().notNullable().references('id').inTable('authors').onUpdate('CASCADE').onDelete('CASCADE');
+	table.integer('post_id').unsigned().notNullable().references('id').inTable('posts').onUpdate('CASCADE').onDelete('CASCADE');
 	table.index(['author_id', 'post_id'], 'uniqueness_index');
 })
 // Create teams_authors table
 .createTable('teams_authors', (table) => {
 	table.increments('id').primary().unsigned();
-	table.integer('team_id').unsigned().notNullable().references('id').inTable('teams');
-	table.integer('author_id').unsigned().notNullable().references('id').inTable('authors');
+	table.integer('team_id').unsigned().notNullable().references('id').inTable('teams').onUpdate('CASCADE').onDelete('CASCADE');
+	table.integer('author_id').unsigned().notNullable().references('id').inTable('authors').onUpdate('CASCADE').onDelete('CASCADE');
 	table.index(['team_id', 'author_id'], 'uniqueness_index');
 })
 // Create issues_categories_order table
 .createTable('issues_categories_order', (table) => {
 	table.increments('id').primary().unsigned();
-	table.integer('issue_id').unsigned().notNullable().references('id').inTable('issues');
-	table.integer('category_id').unsigned().notNullable().references('id').inTable('categories');
+	table.integer('issue_id').unsigned().notNullable().references('id').inTable('issues').onUpdate('CASCADE').onDelete('CASCADE');
+	table.integer('category_id').unsigned().notNullable().references('id').inTable('categories').onUpdate('CASCADE').onDelete('CASCADE');
 	table.integer('categories_order').unsigned().notNullable().defaultTo(0);
 	table.index(['issue_id', 'category_id', 'categories_order'], 'uniqueness_index');
 })
 // Create categories_posts_order table
 .createTable('issues_posts_order', (table) => {
 	table.increments('id').primary().unsigned();
-	table.integer('issue_id').unsigned().notNullable().references('id').inTable('issues');
+	table.integer('issue_id').unsigned().notNullable().references('id').inTable('issues').onUpdate('CASCADE').onDelete('CASCADE');
 	table.integer('type').unsigned().notNullable();
-	table.integer('post_id').unsigned().notNullable().references('id').inTable('posts');
+	table.integer('post_id').unsigned().notNullable().references('id').inTable('posts').onUpdate('CASCADE').onDelete('CASCADE');
 	table.integer('posts_order').unsigned().notNullable().defaultTo(0);
 	// When we use type we can't create the uniqueness index
 	// table.index(['issue_id', 'category_id', 'post_id', 'posts_order'], 'uniqueness_index');
+})
+// Create info_pages table
+.createTable('info_pages', (table) => {
+	table.increments('id').primary().unsigned();
+	table.string('slug', MAX_NAME_OR_SLUG_LENGTH).unique().notNullable();
+	table.string('title', MAX_NAME_OR_SLUG_LENGTH).notNullable();
+	table.text('html', 'mediumtext').notNullable();
 })
 .then((okPacketsArray) => {
 	console.log("success");
