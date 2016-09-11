@@ -64,7 +64,6 @@ knex.schema
 .createTable('posts_meta', (table) => {
 	table.integer('id').primary().unsigned().references('id').inTable('posts').onUpdate('CASCADE').onDelete('CASCADE');
 	table.integer('category_id').unsigned().references('id').inTable('categories').onUpdate('CASCADE').onDelete('SET NULL');
-	table.string('description', MAX_DESCRIPTION_LENGTH);
 	table.integer('views').unsigned().notNullable().defaultTo(0);
 	table.dateTime('gazelle_published_at');
 })

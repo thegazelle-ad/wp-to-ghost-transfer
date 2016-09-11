@@ -13,10 +13,6 @@ const knex = require('knex')({
     "database": "the_gazelle",
     "charset": 'latin1'
   },
-  pool: {
-    max: 2000,
-    min: 0
-  }
 });
 
 const fs = require('fs');
