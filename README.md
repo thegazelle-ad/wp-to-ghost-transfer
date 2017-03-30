@@ -1,3 +1,5 @@
 # wp-to-ghost-transfer
 An extremely messy repository with code that I (Emil Goldsmith Olesen) used to do a one time transfer of data from the old wordpress blog to our new ghost blog and database. It is not supposed to be very readable as it is also basically hardcoded at this time, and has lots of manual elements because the wordpress database was so messy. It is here though is anyone is interested, and the most useful and readable file is probably the createNewTables.js which has all the specifications for the new tables that were created in the database. You could also get some information out of the fillNewTables which has the actual migration. All the original data is in jsonData/posts.json and comes from the commented out code in extractWordpressData.js and was filtered with checkData.py. None of the other code was actually used in the final transfer, but has just been stuff I've been playing around with that I won't delete for now as it's a messy, not ment to be readable repo anyway.
 
+## Update
+It is also being used now for any database related scripts, just to keep a history of them and possibility of possible future reuse of them.
