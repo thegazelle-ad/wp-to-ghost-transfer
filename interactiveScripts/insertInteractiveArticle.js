@@ -27,6 +27,7 @@ knex.select('id').from('posts').where('slug', '=', articleSlug)
   }
   const articleId = rows[0].id;
   return knex('interactive_meta').insert({ id: articleId, html })
+    .then(() => knex('posts_meta').where('id', '=', articleId).update({ is_interactive: true }))
 })
 .then(() => {
   console.log("success");
