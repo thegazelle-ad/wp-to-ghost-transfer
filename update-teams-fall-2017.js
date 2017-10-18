@@ -1,11 +1,11 @@
 'use strict';
 // Zubareva, Paula Dozsa, Ji Young Kim, Ikenna, Cynthia
 
-const management = ['tom-klein', 'kristina-stankovic', 'karolina-wilczynska', 'hannah-taylor', 'annie-bauer', 'nico-raney', 'ayah-rashid', 'karma-gurung', 'bernice-delos-reyes', 'julia-tymoshenko'];
-const editorial = ['shreya-shreeraman', 'priyanka-lakhiani', 'vamika-sinha', 'nikolaj-nielsen', 'jakob-plaschke', 'paula-estrada', 'jocilyn-estes', 'daria-zahaleanu', 'argentina-mena', 'andrea-arletti', 'dania-paul', 'herbert-crowther', 'thirangie-jayatilake', 'nimrah-khanyari', 'warda-malik', 'natalie-kopczewski', 'nathan-quimpo', 'diya-gupta', 'cece-kim', 'chaerin-lim'];
-const multimedia = ['melinda-szekeres', 'joaquin-kunkel', 'katarina-holtzapple', 'ilona-szekeres', 'shenuka-corea', 'mahgul-farooqui', 'miha-klasinc', 'seongun-si', 'simran-parwani', 'alexis-mountcastle', 'aizaz-arif-ansari'];
-const writers = ['taj-chapman', 'paula-valentina', 'aron-braunstiner', 'daniah-kheetan', 'gaurav-dewani', 'simrat-roopra', 'archita-arun', 'dana-abu-ali', 'abdelrahman', 'hind-ait-mout', 'nandini-kochar', 'soohyun-hwangbo'];
-const web = ['emil-goldsmith-olesen', 'zane-mountcastle', 'jaisal-friedman', 'arantza-rodriguez'];
+const management = ['tom-klein', 'kristina-stankovic', 'karolina-wilczynska', 'hannah-taylor', 'annie-bauer', 'nicolas-raney', 'ayah-rashid', 'karma-gurung', 'bernice-delos-reyes', 'julia-tymoshenko'];
+const editorial = ['shreya-shreeraman', 'priyanka-lakhiani', 'vamika-sinha', 'nikolaj-nielsen', 'jakob-plaschke', 'paula-estrada', 'jocilyn-estes', 'daria-zahaleanu', 'argentina-mena', 'andrea-arletti', 'dania-paul', 'herbert-crowther', 'thirangie-jayatilake', 'nimrah-khanyari', 'warda-malik', 'natalie-kopczewski', 'nathan-quimpo', 'cece-kim', 'diya-gupta', 'chaerin-lim'];
+const multimedia = ['melinda-szekeres', 'joaquin-kunkel', 'ilona-szekeres', 'shenuka-corea', 'miha-klasnic', 'seongun-si', 'alexis-mountcastle', 'aizaz-arif-ansari', 'anastasiia-zubareva', 'mahgul-farooqui', 'simran-parwani'];
+const writers = ['taj-chapman', 'paula-valentina-dozsa', 'aron-braunsteiner', 'daniah-kheetan', 'gaurav-dewani', 'simrat-roopra', 'archita-arun', 'dana-abu-ali', 'abdelrahman', 'hind-ait-mout', 'soohyun-hwangbo', 'ji-young-kim', 'nandini-kochar'];
+const web = ['emil-goldsmith-olesen', 'zane-mountcastle', 'jaisal-friedman', 'arantza-rodriguez', 'ikenna-anyanwu', 'cynthia-xin-tong'];
 
 const knex = require('knex')({
   client: 'mysql',
