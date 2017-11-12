@@ -24,7 +24,14 @@ knex.schema
 .table('posts',(table) => {
 	knex.schema.hasColumn('posts', 'mediaContributors_id').then(function(exists, table) {
 		if (!exists) {
-			table.integer('mediaContributors_id').unsigned().notNullable().references('id').inTable('authors').onUpdate('CASCADE').onDelete('CASCADE');
+			.createTable('mediaContributors_posts', (table) => {
+				table.increments('id').primary().unsigned();
+				table.integer('mediaContributor_id').unsigned().notNullable().references('id').inTable('authors').onUpdate('CASCADE').onDelete('CASCADE');
+				table.integer('post_id').unsigned().notNullable().references('id').inTable('posts').onUpdate('CASCADE').onDelete('CASCADE');
+				table.index(['mediaContributor_id', 'post_id'], 'uniqueness_index');
+			})
+			table.increments('id').primary().unsigned();
+			table.integer('mediaContributors_posts_id').unsigned().notNullable().references('id').inTable('mediaContributors_posts').onUpdate('CASCADE').onDelete('CASCADE');
 			}
 		});
 }).then(() => {
