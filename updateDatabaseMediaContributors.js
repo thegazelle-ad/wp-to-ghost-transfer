@@ -19,12 +19,12 @@ const MAX_DESCRIPTION_LENGTH = 170;
 const MAX_BIOGRAPHY_LENGTH = 255;
 
 
-// Start of script - 1. Add mediaContributors_posts table with reference to author_id in row 1 and posts_id in row 2
+// Start of script - 1. Add media_contributors_posts table with reference to author_id in row 1 and posts_id in row 2
 knex.schema
 //Reset Database
-.dropTableIfExists('mediaContributors_posts')
-// Create mediaContributors_posts table
-.createTable('mediaContributors_posts', (table) => {
+.dropTableIfExists('media_contributors_posts')
+// Create media_contributors_posts table
+.createTable('media_contributors_posts', (table) => {
 	table.increments('id').primary().unsigned();
 	table.integer('author_id').unsigned().notNullable().references('id').inTable('authors').onUpdate('CASCADE').onDelete('CASCADE');
 	table.integer('post_id').unsigned().notNullable().references('id').inTable('posts').onUpdate('CASCADE').onDelete('CASCADE');
