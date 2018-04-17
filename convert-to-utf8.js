@@ -37,7 +37,7 @@ gazelle('staff').where('slug', '=', 'Ã¡dÃ¡m-nagy').del().then(() =>
 ).then(columnsToConvert => {
   const promises = columnsToConvert.map(row => {
     const { table_name: table, column_name: col } = row;
-    return gazelle.schema.raw(`UPDATE ${table} SET ${col} = @txt WHERE char_length(${col}) =  LENGTH(@txt := CONVERT(BINARY CONVERT(${col} USING latin1) USING utf8))`);
+    return gazelle.schema.raw(`UPDATE \`${table}\` SET \`${col}\` = @txt WHERE char_length(\`${col}\`) =  LENGTH(@txt := CONVERT(BINARY CONVERT(\`${col}\` USING latin1) USING utf8))`);
   });
   return Promise.all(promises)
 }).then(disconnect);
