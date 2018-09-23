@@ -25,7 +25,7 @@ const knex = require('knex')({
 knex('semesters').insert([
   {
     'name': 'Fall 2018',
-    'date': '2018-09-22',
+    'date': '2018-09-01',
   },
 ])
 .then(() => {
