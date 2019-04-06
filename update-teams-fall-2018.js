@@ -89,3 +89,4 @@ function populateTeam(slugs, teamSlug, semesterName, teamOrder) {
     process.exit(1);
   });
 }
+
