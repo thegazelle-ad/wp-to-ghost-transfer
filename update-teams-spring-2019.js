@@ -5,11 +5,11 @@ if (!process.env.DATABASE_PASSWORD) {
   process.exit(1);
 }
 
-const management = ['maya-morsli', 'jakob-plaschke', 'paula-estrada', 'jocilyn-estes', 'nathan-quimpo', 'dania-paul', 'hania-bar', 'emil-goldsmith-olesen', 'julia-tymoshenko'];
-const editorial = ['priyanka-lakhiani', 'herbert-crowther', 'soohyun-hwangbo', 'aasna-sijapati', 'anna-pustovoit', 'kaashif-hajee', 'sobha-gadi', 'laura-assanmal', 'tracy-vavrova', 'dylan-palladino', 'vlado-vasile', 'mari-velasquez-soler', 'serra-okumus', 'aaron-marcus-willers', 'gayoung-lee', 'ming-ee-tham'];
-const multimedia = ['tom-abi-samra', 'ethan-david', 'kyle-adams', 'melika-shahin'];
-const writers = ['ian-hoyt', 'jessica-abdala', 'rashtra-bandari', 'steffen-holter', 'jamie-uy'];
-const web = ['navya-suri', 'maria-jaramillo', 'jacinta-hu'];
+const management = ['maya-morsli', 'jocilyn-estes', 'aaron-marcus-willers', 'haneen-fathy', 'mueez-hasan', 'eyza-irene-hamdani-hussain', 'navya-suri', 'emil-goldsmith-olesen', 'auguste-nomeikaite', 'sameera-singh'];
+const editorial = ['taj-chapman', 'mari-velasquez-soler', 'davit-jintcharadze', 'anna-pustovoit', 'andrea-arletti', 'abhyudaya-tyagi', 'aayusha-shrestha', 'ari-hawkins', 'khaled-alhosani', 'kyle-adams', 'ming-ee-tham', 'katharina-klaunig', 'gayoung-lee'];
+const multimedia = ['tom-abi-samra', 'mahgul-farooqui', 'emily-broad', 'katarina-holtzapple', 'ta-hyun-lee', 'liene-pekuse', 'darya-sukhova', 'vivi-zhu'];
+const writers = ['ian-hoyt', 'elyazyeh-al-falacy', 'liam-meier', 'laila-hashem', 'andrijana-pejchinovska', 'chhete-sherpa', 'sarah-afaneh', 'chisom-ezeifemeelu', 'rashtra-bandari', 'malak-abdel-ghaffar', 'steffen-holter', 'sara-monsalve'];
+const web = ['navya-suri', 'abdullah-zameek', 'jacinta-hu', 'nurpeiis-baimukan', 'junior-garcia', 'simran-parwani', 'jung-soo-ha', 'rick-kim', 'mariam-el-sahhar', 'manesha-ramesh'];
 
 const knex = require('knex')({
   client: 'mysql',
@@ -24,19 +24,23 @@ const knex = require('knex')({
 
 knex('semesters').insert([
   {
-    'name': 'Fall 2018',
-    'date': '2018-09-01',
+    'name': 'Spring 2019',
+    'date': '2019-02-01',
   },
 ])
 .then(() => {
   console.log("Semesters inserted successfully");
-  populateTeam(management, 'management', 'Fall 2018', 0);
-  populateTeam(editorial, 'editorial', 'Fall 2018', 1);
-  populateTeam(multimedia, 'multimedia', 'Fall 2018', 2);
-  populateTeam(writers, 'writers', 'Fall 2018', 3);
-  populateTeam(web, 'web', 'Fall 2018', 4);
+  populateTeam(management, 'management', 'Spring 2019', 0);
+  populateTeam(editorial, 'editorial', 'Spring 2019', 1);
+  populateTeam(multimedia, 'multimedia', 'Spring 2019', 2);
+  populateTeam(writers, 'writers', 'Spring 2019', 3);
+  populateTeam(web, 'web', 'Spring 2019', 4);
+	addMarcelo();
 });
 
+function addMarcelo() {
+	knex('teams_staff').insert([{team_id: 6, staff_id: 647, team_order: 4, staff_order: 9, semester_id: 5}]).then(() => console.log(`Inserted Marcelo`));
+}
 
 function populateTeam(slugs, teamSlug, semesterName, teamOrder) {
   let semesterId = null;
