@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/thegazelle-ad/wp-to-ghost-transfer#readme",
   "dependencies": {
-    "knex": "^0.11.9",
+    "knex": "^0.19.5",
     "lodash": "^4.15.0",
     "mysql": "^2.11.1"
   }
